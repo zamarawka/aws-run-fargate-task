@@ -7,6 +7,7 @@ export class TaskCreationError extends Error {}
 export class TaskSatateError extends Error {}
 
 interface Params {
+  checkClusterExists?: boolean;
   count?: number;
   isPublicIp?: boolean;
   sgFilters?: Filter[];
@@ -34,6 +35,7 @@ export default async function runTask(
   taskName: string,
   cluster: string,
   {
+    checkClusterExists = false,
     isPublicIp = false,
     count = 1,
     sgFilters,
@@ -48,7 +50,7 @@ export default async function runTask(
     pollDelay = 6,
   }: Params = {},
 ) {
-  if (!(await hasCluster(cluster))) {
+  if (checkClusterExists && !(await hasCluster(cluster))) {
     core.error(`Error: cluster "${cluster}" not found! Check out params!`);
 
     throw new ClusterNotFound();

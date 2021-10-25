@@ -39,6 +39,13 @@ The ECS cluster to execute the task on.
 - required: false
 - default: default
 
+### check_cluster_exists
+
+Check cluster exists before task run. Need additional IAM policy.
+
+- required: false
+- default: false
+
 ### command
 
 Overide default container command.

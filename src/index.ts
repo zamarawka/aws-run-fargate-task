@@ -55,6 +55,7 @@ export default async function main() {
   // const task_role = getInput('task_role');
 
   const wait = getBooleanInput('wait') ?? true;
+  const checkClusterExists = getBooleanInput('check_cluster_exists') ?? false;
   const isPublicIp = getBooleanInput('public_ip') ?? false;
   const timeout = numberify(getInput('timeout')) ?? 600;
   const sgIds = parseArray(getInput('sg_ids', { trimWhitespace: true }));
@@ -67,6 +68,7 @@ export default async function main() {
 
   try {
     const res = await runTask(task_name, cluster, {
+      checkClusterExists,
       isPublicIp,
       command,
       environment,

@@ -8,6 +8,10 @@ inputs:
     description: 'ECS Cluster to run task on'
     required: false
     default: 'default'
+  check_cluster_exists:
+    description: 'Check cluster exists before task run. Need additional IAM policy.'
+    required: false
+    default: false
   command:
     description: 'Overide default container command'
     required: false
