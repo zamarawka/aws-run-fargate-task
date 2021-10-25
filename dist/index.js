@@ -22122,7 +22122,7 @@ async function main() {
     const isPublicIp = (_c = (0, core_1.getBooleanInput)('public_ip')) !== null && _c !== void 0 ? _c : false;
     const timeout = (_d = numberify((0, core_1.getInput)('timeout'))) !== null && _d !== void 0 ? _d : 600;
     const sgIds = parseArray((0, core_1.getInput)('sg_ids', { trimWhitespace: true }));
-    const sgFilter = parseFilters((0, core_1.getMultilineInput)('sg_filter', { trimWhitespace: true }));
+    const sgFilters = parseFilters((0, core_1.getMultilineInput)('sg_filters', { trimWhitespace: true }));
     const sgNames = parseArray((0, core_1.getInput)('sg_names', { trimWhitespace: true }));
     const subnetFilters = parseFilters((0, core_1.getMultilineInput)('subnet_filters', { trimWhitespace: true }));
     const subnetIds = parseArray((0, core_1.getInput)('subnet_ids', { trimWhitespace: true }));
@@ -22135,7 +22135,7 @@ async function main() {
             wait,
             timeout,
             sgIds,
-            sgFilter,
+            sgFilters,
             sgNames,
             subnetFilters,
             subnetIds,
@@ -22204,7 +22204,7 @@ async function hasCluster(cluster) {
     const foundedClusters = await ecs.describeClusters({ clusters: [cluster] }).promise();
     return ((_b = (_a = foundedClusters.clusters) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.clusterName) === cluster;
 }
-async function runTask(taskName, cluster, { isPublicIp = false, count = 1, sgFilter, sgIds, sgNames, subnetFilters, subnetIds, command, environment, timeout = 600, wait = true, pollDelay = 6, } = {}) {
+async function runTask(taskName, cluster, { isPublicIp = false, count = 1, sgFilters, sgIds, sgNames, subnetFilters, subnetIds, command, environment, timeout = 600, wait = true, pollDelay = 6, } = {}) {
     if (!(await hasCluster(cluster))) {
         core.error(`Error: cluster "${cluster}" not found! Check out params!`);
         throw new ClusterNotFound();
@@ -22214,7 +22214,7 @@ async function runTask(taskName, cluster, { isPublicIp = false, count = 1, sgFil
         const [sg, subnets] = await Promise.all([
             ec2
                 .describeSecurityGroups({
-                Filters: sgFilter,
+                Filters: sgFilters,
                 GroupIds: sgIds,
                 GroupNames: sgNames,
             })

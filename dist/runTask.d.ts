@@ -9,7 +9,7 @@ export declare class TaskSatateError extends Error {
 interface Params {
     count?: number;
     isPublicIp?: boolean;
-    sgFilter?: Filter[];
+    sgFilters?: Filter[];
     sgIds?: string[];
     sgNames?: string[];
     subnetFilters?: Filter[];
@@ -20,5 +20,5 @@ interface Params {
     wait?: boolean;
     pollDelay?: number;
 }
-export default function runTask(taskName: string, cluster: string, { isPublicIp, count, sgFilter, sgIds, sgNames, subnetFilters, subnetIds, command, environment, timeout, wait, pollDelay, }?: Params): Promise<number>;
+export default function runTask(taskName: string, cluster: string, { isPublicIp, count, sgFilters, sgIds, sgNames, subnetFilters, subnetIds, command, environment, timeout, wait, pollDelay, }?: Params): Promise<number>;
 export {};
