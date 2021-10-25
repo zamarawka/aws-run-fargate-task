@@ -121,6 +121,25 @@ How long to wait when waiting for the ECS task to timeout.
 - required: `false`
 - default: `600`
 
+## Development
+
+1. Create .env file for tests in root folder
+1. Run:
+
+```sh
+npm install
+npm start
+```
+
+Other commands
+
+```sh
+npm run format # code fomatting
+npm run lint # linting
+npm run type-check # type-check
+npm run build # build release
+```
+
 ---
 
 Active maintenance with care and ❤️.
