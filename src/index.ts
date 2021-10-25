@@ -58,7 +58,7 @@ export default async function main() {
   const isPublicIp = getBooleanInput('public_ip') ?? false;
   const timeout = numberify(getInput('timeout')) ?? 600;
   const sgIds = parseArray(getInput('sg_ids', { trimWhitespace: true }));
-  const sgFilter = parseFilters(getMultilineInput('sg_filter', { trimWhitespace: true }));
+  const sgFilters = parseFilters(getMultilineInput('sg_filters', { trimWhitespace: true }));
   const sgNames = parseArray(getInput('sg_names', { trimWhitespace: true }));
   const subnetFilters = parseFilters(getMultilineInput('subnet_filters', { trimWhitespace: true }));
   const subnetIds = parseArray(getInput('subnet_ids', { trimWhitespace: true }));
@@ -73,7 +73,7 @@ export default async function main() {
       wait,
       timeout,
       sgIds,
-      sgFilter,
+      sgFilters,
       sgNames,
       subnetFilters,
       subnetIds,

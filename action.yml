@@ -14,7 +14,7 @@ inputs:
   sg_ids:
     description: 'Security groups ids'
     required: false
-  sg_filter:
+  sg_filters:
     description: 'Security groups filter'
     required: false
   sg_names:

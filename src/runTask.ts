@@ -9,7 +9,7 @@ export class TaskSatateError extends Error {}
 interface Params {
   count?: number;
   isPublicIp?: boolean;
-  sgFilter?: Filter[];
+  sgFilters?: Filter[];
   sgIds?: string[];
   sgNames?: string[];
   subnetFilters?: Filter[];
@@ -36,7 +36,7 @@ export default async function runTask(
   {
     isPublicIp = false,
     count = 1,
-    sgFilter,
+    sgFilters,
     sgIds,
     sgNames,
     subnetFilters,
@@ -58,7 +58,7 @@ export default async function runTask(
     const [sg, subnets] = await Promise.all([
       ec2
         .describeSecurityGroups({
-          Filters: sgFilter,
+          Filters: sgFilters,
           GroupIds: sgIds,
           GroupNames: sgNames,
         })
