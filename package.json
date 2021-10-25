@@ -1,0 +1,38 @@
+{
+  "name": "aws-run-fargate-task",
+  "version": "1.0.0",
+  "description": "Run and wait untill stopped task on AWS ECS fargate instance.",
+  "main": "dist/index.js",
+  "scripts": {
+    "format": "prettier --write src",
+    "type-check": "tsc --noEmit",
+    "build": "ncc build src/index.ts -o dist",
+    "start": "env-cmd ts-node src/index.ts",
+    "lint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zamarawka/aws-run-fargate-task.git"
+  },
+  "author": "zamarawka <somebody.told@mail.ru> (https://github.com/zamarawka)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zamarawka/aws-run-fargate-task/issues"
+  },
+  "homepage": "https://github.com/zamarawka/aws-run-fargate-task#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "@vercel/ncc": "^0.31.1",
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.1.0",
+    "prettier": "^2.4.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/exec": "^1.1.0",
+    "aws-sdk": "^2.1013.0"
+  }
+}

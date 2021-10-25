@@ -1,0 +1,50 @@
+name: 'AWS ECS. Run fargate Task'
+description: 'Run and wait untill end existing ECS task'
+inputs:
+  task_name:
+    description: 'Name of existing ECS task, in the form of `name[:version]`.'
+    required: true
+  cluster:
+    description: 'ECS Cluster to run task on'
+    required: false
+    default: 'default'
+  command:
+    description: 'Overide default container command'
+    required: false
+  sg_ids:
+    description: 'Security groups ids'
+    required: false
+  sg_filter:
+    description: 'Security groups filter'
+    required: false
+  sg_names:
+    description: 'Security groups names'
+    required: false
+  subnet_filters:
+    description: 'Subnets filter'
+    required: false
+  subnet_ids:
+    description: 'Subnets ids'
+    required: false
+  public_ip:
+    description: 'Assign public ip for task'
+    default: false
+  wait:
+    description: 'Wait for ECS task to complete'
+    default: true
+  timeout:
+    description: 'Timeout when waiting for completition'
+    default: 600
+    required: false
+
+outputs:
+  status:
+    description: 'Exit status of container'
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'upload-cloud'
+  color: 'orange'
