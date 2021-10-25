@@ -7,6 +7,7 @@ export declare class TaskCreationError extends Error {
 export declare class TaskSatateError extends Error {
 }
 interface Params {
+    checkClusterExists?: boolean;
     count?: number;
     isPublicIp?: boolean;
     sgFilters?: Filter[];
@@ -20,5 +21,5 @@ interface Params {
     wait?: boolean;
     pollDelay?: number;
 }
-export default function runTask(taskName: string, cluster: string, { isPublicIp, count, sgFilters, sgIds, sgNames, subnetFilters, subnetIds, command, environment, timeout, wait, pollDelay, }?: Params): Promise<number>;
+export default function runTask(taskName: string, cluster: string, { checkClusterExists, isPublicIp, count, sgFilters, sgIds, sgNames, subnetFilters, subnetIds, command, environment, timeout, wait, pollDelay, }?: Params): Promise<number>;
 export {};
