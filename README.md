@@ -2,11 +2,29 @@
 
 This GitHub Action allows run any existing task from ci and wait until it ends. Very useful in case of database migration before new version of app will be deployed.
 
-This action expects AWS credentials to have already been initialized.
+## Pre Requirements
+
+> All pre requirements should be done before usage.
+
+### Infrastructure
+
+- You need to create task defenition on your AWS console.
+- Get AWS's "ci user" keys to pass into "aws-actions/configure-aws-credentials"
+
+### Policies
+
+Minimum sets of policies should be:
+
+- ecs:RunTask
+- ecs:DescribeTasks
+- ec2:DescribeSubnets
+- ec2:DescribeSecurityGroups
+
+In case you need check cluster exists:
+
+- ecs:DescribeClusters
 
 ## Usage
-
-### Executing an existing task
 
 ```yaml
 - name: Configure AWS Credentials
@@ -30,67 +48,80 @@ This action expects AWS credentials to have already been initialized.
 
 Name of existing task definition to execute.
 
-- required: true
+- required: `true`
 
 ### cluster
 
 The ECS cluster to execute the task on.
 
-- required: false
-- default: default
+- required: `false`
+- default: `default`
 
 ### check_cluster_exists
 
 Check cluster exists before task run. Need additional IAM policy.
 
-- required: false
-- default: false
+- required: `false`
+- default: `false`
 
 ### command
 
 Overide default container command.
 
-- required: false
+- required: `false`
 
 ### sg_ids
 
 Security groups ids
 
-- required: false
+- required: `false`
 
 ### sg_filters
 
 Security groups filter
--required: false
+
+- required: `false`
 
 ### sg_names
 
 Security groups names
--required: false
+
+- required: `false`
 
 ### subnet_filters
 
 Subnets filter
--required: false
+
+- required: `false`
 
 ### subnet_ids
 
 Subnets ids
--required: false
+
+- required: `false`
+
+### public_ip
+
+Assign public ip for task
+
+- required: `false`
+- default: `false`
 
 ### wait
 
 Task ended waiting timeout.
 
-- required: false
-- default: true
+- required: `false`
+- default: `true`
 
 ### timeout
 
 How long to wait when waiting for the ECS task to timeout.
 
-- required: false
-- default: 600
+- required: `false`
+- default: `600`
+
+---
 
 Active maintenance with care and ❤️.
 
