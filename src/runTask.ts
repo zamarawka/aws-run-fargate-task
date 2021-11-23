@@ -103,7 +103,7 @@ export default async function runTask(
       ];
     }
 
-    const task = await ecs
+    const runTaskResponse = await ecs
       .runTask({
         count,
         cluster,
@@ -119,21 +119,21 @@ export default async function runTask(
       })
       .promise();
 
-    if (!task.tasks?.length || !task.tasks[0].taskArn) {
+    if (!runTaskResponse.tasks?.length || !runTaskResponse.tasks[0].taskArn) {
       core.error(`Error: task "${taskName}" couldn't created! Check out params!`);
 
       throw new TaskCreationError();
     }
 
     if (!wait) {
-      console.log('task >>>', task);
+      console.log('task >>>', runTaskResponse);
 
       return 0;
     }
 
     core.info('Wait unill task stopped');
 
-    const tasks = [task.tasks[0].taskArn];
+    const tasks = [runTaskResponse.tasks[0].taskArn];
 
     await ecs
       .waitFor('tasksStopped', {
