@@ -120,6 +120,8 @@ export default async function runTask(
       .promise();
 
     if (!runTaskResponse.tasks?.length || !runTaskResponse.tasks[0].taskArn) {
+      console.log('Run ecs task response >>>', runTaskResponse);
+
       core.error(`Error: task "${taskName}" couldn't created! Check out params!`);
 
       throw new TaskCreationError();
