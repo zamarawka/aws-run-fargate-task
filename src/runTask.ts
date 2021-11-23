@@ -107,7 +107,7 @@ export default async function runTask(
       .runTask({
         count,
         cluster,
-        overrides,
+        overrides: Object.keys(overrides).length > 0 ? overrides : undefined,
         taskDefinition: taskName,
         networkConfiguration: {
           awsvpcConfiguration: {
