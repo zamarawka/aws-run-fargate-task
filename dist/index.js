@@ -22296,8 +22296,7 @@ async function runTask(taskName, cluster, { checkClusterExists = false, isPublic
         console.log('task >>>', taskState);
         const exitCode = (_d = (_c = taskState.tasks[0].containers) === null || _c === void 0 ? void 0 : _c[0].exitCode) !== null && _d !== void 0 ? _d : 1;
         const exitReason = (_f = (_e = taskState.tasks[0].containers) === null || _e === void 0 ? void 0 : _e[0].reason) !== null && _f !== void 0 ? _f : 'Unknown';
-        core.info(`Run finshed. Task stopped with code ${exitCode}`);
-        core.info(`Run finshed. Task stopped with reason ${exitReason}`);
+        core.info(`Run finished. Task stopped with code ${exitCode} and reason ${exitReason}`);
         return exitCode;
     });
 }
