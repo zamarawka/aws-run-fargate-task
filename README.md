@@ -121,6 +121,14 @@ How long to wait when waiting for the ECS task to timeout.
 - required: `false`
 - default: `600`
 
+### capacity_provider
+
+Capacity provider type. By default will pick it from your cluster settings.
+Useful when you have cluster with mixed tasks.
+
+- required: `false`
+- values: `FARGATE` or `FARGATE_SPOT`
+
 ## Development
 
 1. Create .env file for tests in root folder

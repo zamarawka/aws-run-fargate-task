@@ -1,10 +1,12 @@
-import ECS, { TaskOverride, KeyValuePair } from 'aws-sdk/clients/ecs';
+import ECS, { KeyValuePair, RunTaskRequest } from 'aws-sdk/clients/ecs';
 import EC2, { Filter } from 'aws-sdk/clients/ec2';
 import * as core from '@actions/core';
 
 export class ClusterNotFound extends Error {}
 export class TaskCreationError extends Error {}
 export class TaskSatateError extends Error {}
+
+export type CapacityProvider = 'FARGATE' | 'FARGATE_SPOT';
 
 interface Params {
   checkClusterExists?: boolean;
@@ -20,6 +22,7 @@ interface Params {
   timeout?: number;
   wait?: boolean;
   pollDelay?: number;
+  capacityProvider?: CapacityProvider;
 }
 
 const ecs = new ECS();
@@ -48,6 +51,7 @@ export default async function runTask(
     timeout = 600,
     wait = true,
     pollDelay = 6,
+    capacityProvider,
   }: Params = {},
 ) {
   if (checkClusterExists && !(await hasCluster(cluster))) {
@@ -91,49 +95,60 @@ export default async function runTask(
   return await core.group('Flush task to ECS', async () => {
     core.info(`Run task: ${taskName}`);
 
-    const overrides: TaskOverride = {};
+    const runTaksRequestParams: RunTaskRequest = {
+      count,
+      cluster,
+      taskDefinition: taskName,
+      networkConfiguration: {
+        awsvpcConfiguration: {
+          subnets: sbnIds,
+          securityGroups: securityGroupIds,
+          assignPublicIp: isPublicIp ? 'ENABLED' : 'DISABLED',
+        },
+      },
+    };
 
     if (command || environment) {
-      overrides.containerOverrides = [
+      runTaksRequestParams.overrides = {
+        containerOverrides: [
+          {
+            name: taskName,
+            command,
+            environment,
+          },
+        ],
+      };
+    }
+
+    if (capacityProvider) {
+      runTaksRequestParams.capacityProviderStrategy = [
         {
-          name: taskName,
-          command,
-          environment,
+          base: count,
+          capacityProvider,
+          weight: 1,
         },
       ];
     }
 
-    const task = await ecs
-      .runTask({
-        count,
-        cluster,
-        overrides,
-        taskDefinition: taskName,
-        networkConfiguration: {
-          awsvpcConfiguration: {
-            subnets: sbnIds,
-            securityGroups: securityGroupIds,
-            assignPublicIp: isPublicIp ? 'ENABLED' : 'DISABLED',
-          },
-        },
-      })
-      .promise();
+    const runTaskResponse = await ecs.runTask(runTaksRequestParams).promise();
 
-    if (!task.tasks?.length || !task.tasks[0].taskArn) {
+    if (!runTaskResponse.tasks?.length || !runTaskResponse.tasks[0].taskArn) {
+      console.log('Run ecs task response >>>', runTaskResponse);
+
       core.error(`Error: task "${taskName}" couldn't created! Check out params!`);
 
       throw new TaskCreationError();
     }
 
     if (!wait) {
-      console.log('task >>>', task);
+      console.log('task >>>', runTaskResponse);
 
       return 0;
     }
 
     core.info('Wait unill task stopped');
 
-    const tasks = [task.tasks[0].taskArn];
+    const tasks = [runTaskResponse.tasks[0].taskArn];
 
     await ecs
       .waitFor('tasksStopped', {
