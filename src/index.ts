@@ -1,6 +1,6 @@
 import { getInput, setFailed, getMultilineInput, getBooleanInput, info } from '@actions/core';
 
-import runTask from './runTask';
+import runTask, { CapacityProvider } from './runTask';
 
 function numberify(v: string) {
   const val = parseInt(v);
@@ -26,6 +26,10 @@ function parseObject(v: string, { name = 'Name', value = 'Values' } = {}) {
     [name]: n,
     [value]: val,
   };
+}
+
+function parseEnum<T extends string>(v: string, values: string[]) {
+  return values.includes(v) ? (v as T) : undefined;
 }
 
 function parseObjects(v: string[], params?: Parameters<typeof parseObject>[1]) {
@@ -63,6 +67,10 @@ export default async function main() {
   const sgNames = parseArray(getInput('sg_names', { trimWhitespace: true }));
   const subnetFilters = parseFilters(getMultilineInput('subnet_filters', { trimWhitespace: true }));
   const subnetIds = parseArray(getInput('subnet_ids', { trimWhitespace: true }));
+  const capacityProvider = parseEnum<CapacityProvider>(
+    getInput('capacity_provider', { trimWhitespace: true }),
+    ['FARGATE', 'FARGATE_SPOT'],
+  );
 
   info('Run fargate task');
 
@@ -79,6 +87,7 @@ export default async function main() {
       sgNames,
       subnetFilters,
       subnetIds,
+      capacityProvider,
     });
 
     if (res) {
