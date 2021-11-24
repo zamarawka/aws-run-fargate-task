@@ -34,7 +34,7 @@ In case you need check cluster exists:
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     aws-region: us-east-2
 - name: Run my ECS task
-  uses: zamarawka/aws-run-fargate-task@master
+  uses: zamarawka/aws-run-fargate-task@v1
   with:
     task_name: my-ecs-task
     cluster: my-ecs-cluster
