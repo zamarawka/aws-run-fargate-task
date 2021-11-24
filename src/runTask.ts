@@ -164,9 +164,9 @@ export default async function runTask(
     console.log('task >>>', taskState);
 
     const exitCode = taskState.tasks[0].containers?.[0].exitCode ?? 1;
+    const exitReason = taskState.tasks[0].containers?.[0].reason ?? 'Unknown';
 
-    core.info(`Run finshed. Task stopped with code ${exitCode}`);
-
+    core.info(`Run finished. Task stopped with code "${exitCode}" and reason "${exitReason}"`);
     return exitCode;
   });
 }

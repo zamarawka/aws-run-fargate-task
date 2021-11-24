@@ -22235,7 +22235,7 @@ async function runTask(taskName, cluster, { checkClusterExists = false, isPublic
         return { securityGroupIds, sbnIds };
     });
     return await core.group('Flush task to ECS', async () => {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         core.info(`Run task: ${taskName}`);
         const overrides = {};
         if (command || environment) {
@@ -22295,7 +22295,8 @@ async function runTask(taskName, cluster, { checkClusterExists = false, isPublic
         }
         console.log('task >>>', taskState);
         const exitCode = (_d = (_c = taskState.tasks[0].containers) === null || _c === void 0 ? void 0 : _c[0].exitCode) !== null && _d !== void 0 ? _d : 1;
-        core.info(`Run finshed. Task stopped with code ${exitCode}`);
+        const exitReason = (_f = (_e = taskState.tasks[0].containers) === null || _e === void 0 ? void 0 : _e[0].reason) !== null && _f !== void 0 ? _f : 'Unknown';
+        core.info(`Run finished. Task stopped with code ${exitCode} and reason ${exitReason}`);
         return exitCode;
     });
 }
