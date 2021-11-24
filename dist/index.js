@@ -22099,6 +22099,9 @@ function parseObject(v, { name = 'Name', value = 'Values' } = {}) {
         [value]: val,
     };
 }
+function parseEnum(v, values) {
+    return values.includes(v) ? v : undefined;
+}
 function parseObjects(v, params) {
     return v.map((val) => parseObject(val, params)).filter((v) => !!v);
 }
@@ -22127,6 +22130,7 @@ async function main() {
     const sgNames = parseArray((0, core_1.getInput)('sg_names', { trimWhitespace: true }));
     const subnetFilters = parseFilters((0, core_1.getMultilineInput)('subnet_filters', { trimWhitespace: true }));
     const subnetIds = parseArray((0, core_1.getInput)('subnet_ids', { trimWhitespace: true }));
+    const capacityProvider = parseEnum((0, core_1.getInput)('capacity_provider', { trimWhitespace: true }), ['FARGATE', 'FARGATE_SPOT']);
     (0, core_1.info)('Run fargate task');
     try {
         const res = await (0, runTask_1.default)(task_name, cluster, {
@@ -22141,6 +22145,7 @@ async function main() {
             sgNames,
             subnetFilters,
             subnetIds,
+            capacityProvider,
         });
         if (res) {
             return (0, core_1.setFailed)('Task finished with error code');
@@ -22206,7 +22211,7 @@ async function hasCluster(cluster) {
     const foundedClusters = await ecs.describeClusters({ clusters: [cluster] }).promise();
     return ((_b = (_a = foundedClusters.clusters) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.clusterName) === cluster;
 }
-async function runTask(taskName, cluster, { checkClusterExists = false, isPublicIp = false, count = 1, sgFilters, sgIds, sgNames, subnetFilters, subnetIds, command, environment, timeout = 600, wait = true, pollDelay = 6, } = {}) {
+async function runTask(taskName, cluster, { checkClusterExists = false, isPublicIp = false, count = 1, sgFilters, sgIds, sgNames, subnetFilters, subnetIds, command, environment, timeout = 600, wait = true, pollDelay = 6, capacityProvider, } = {}) {
     if (checkClusterExists && !(await hasCluster(cluster))) {
         core.error(`Error: cluster "${cluster}" not found! Check out params!`);
         throw new ClusterNotFound();
@@ -22237,21 +22242,9 @@ async function runTask(taskName, cluster, { checkClusterExists = false, isPublic
     return await core.group('Flush task to ECS', async () => {
         var _a, _b, _c, _d;
         core.info(`Run task: ${taskName}`);
-        const overrides = {};
-        if (command || environment) {
-            overrides.containerOverrides = [
-                {
-                    name: taskName,
-                    command,
-                    environment,
-                },
-            ];
-        }
-        const task = await ecs
-            .runTask({
+        const runTaksRequestParams = {
             count,
             cluster,
-            overrides,
             taskDefinition: taskName,
             networkConfiguration: {
                 awsvpcConfiguration: {
@@ -22260,18 +22253,39 @@ async function runTask(taskName, cluster, { checkClusterExists = false, isPublic
                     assignPublicIp: isPublicIp ? 'ENABLED' : 'DISABLED',
                 },
             },
-        })
-            .promise();
-        if (!((_a = task.tasks) === null || _a === void 0 ? void 0 : _a.length) || !task.tasks[0].taskArn) {
+        };
+        if (command || environment) {
+            runTaksRequestParams.overrides = {
+                containerOverrides: [
+                    {
+                        name: taskName,
+                        command,
+                        environment,
+                    },
+                ],
+            };
+        }
+        if (capacityProvider) {
+            runTaksRequestParams.capacityProviderStrategy = [
+                {
+                    base: count,
+                    capacityProvider,
+                    weight: 1,
+                },
+            ];
+        }
+        const runTaskResponse = await ecs.runTask(runTaksRequestParams).promise();
+        if (!((_a = runTaskResponse.tasks) === null || _a === void 0 ? void 0 : _a.length) || !runTaskResponse.tasks[0].taskArn) {
+            console.log('Run ecs task response >>>', runTaskResponse);
             core.error(`Error: task "${taskName}" couldn't created! Check out params!`);
             throw new TaskCreationError();
         }
         if (!wait) {
-            console.log('task >>>', task);
+            console.log('task >>>', runTaskResponse);
             return 0;
         }
         core.info('Wait unill task stopped');
-        const tasks = [task.tasks[0].taskArn];
+        const tasks = [runTaskResponse.tasks[0].taskArn];
         await ecs
             .waitFor('tasksStopped', {
             cluster,
