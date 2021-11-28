@@ -129,6 +129,13 @@ Useful when you have cluster with mixed tasks.
 - required: `false`
 - values: `FARGATE` or `FARGATE_SPOT`
 
+### count
+
+Tasks count.
+
+- required: `false`
+- default: 1
+
 ## Development
 
 1. Create .env file for tests in root folder
