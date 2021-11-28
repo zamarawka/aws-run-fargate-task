@@ -44,7 +44,7 @@ In case you need check cluster exists:
 
 ## Versioning
 
-Package follows (semver)[https://semver.org] versioning model.
+Package follows [semver](https://semver.org) versioning model.
 At now actual package major version is `v1`.
 New releases comes with bump version's (`v1.x.x`), but `v1` tag is moving to latest on whole `v1` major release.
 So, you could use this github action by this way:
@@ -55,6 +55,14 @@ So, you could use this github action by this way:
 
 And stay on actual relese with last fixes and features.
 On new major release (in case api breaking change) will be added v2 tag with same update policy.
+
+Not recommended use action by branch name on production, like this:
+
+```yaml
+- uses: zamarawka/aws-run-fargate-task@master
+```
+
+This is unsafe and could unpredictable break your CI process.
 
 ## Inputs
 
