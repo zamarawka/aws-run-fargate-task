@@ -62,6 +62,7 @@ export default async function main() {
   const checkClusterExists = getBooleanInput('check_cluster_exists') ?? false;
   const isPublicIp = getBooleanInput('public_ip') ?? false;
   const timeout = numberify(getInput('timeout')) ?? 600;
+  const count = numberify(getInput('count')) ?? 1;
   const sgIds = parseArray(getInput('sg_ids', { trimWhitespace: true }));
   const sgFilters = parseFilters(getMultilineInput('sg_filters', { trimWhitespace: true }));
   const sgNames = parseArray(getInput('sg_names', { trimWhitespace: true }));
@@ -78,6 +79,7 @@ export default async function main() {
     const res = await runTask(task_name, cluster, {
       checkClusterExists,
       isPublicIp,
+      count,
       command,
       environment,
       wait,
