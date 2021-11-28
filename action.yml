@@ -40,6 +40,13 @@ inputs:
     description: 'Timeout when waiting for completition'
     default: 600
     required: false
+  capacity_provider:
+    description: 'Capacity provider type. By default will pick it from your cluster settings.'
+    required: false
+  count:
+    description: 'Tasks count'
+    default: 1
+    required: false
 
 outputs:
   status:

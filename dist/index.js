@@ -22113,7 +22113,7 @@ function parseFilters(...args) {
     });
 }
 async function main() {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     const task_name = (0, core_1.getInput)('task_name', { required: true, trimWhitespace: true });
     const cluster = (_a = (0, core_1.getInput)('cluster', { trimWhitespace: true })) !== null && _a !== void 0 ? _a : 'default';
     const command = parseArray((0, core_1.getInput)('command', { trimWhitespace: true }), ' ');
@@ -22125,6 +22125,7 @@ async function main() {
     const checkClusterExists = (_c = (0, core_1.getBooleanInput)('check_cluster_exists')) !== null && _c !== void 0 ? _c : false;
     const isPublicIp = (_d = (0, core_1.getBooleanInput)('public_ip')) !== null && _d !== void 0 ? _d : false;
     const timeout = (_e = numberify((0, core_1.getInput)('timeout'))) !== null && _e !== void 0 ? _e : 600;
+    const count = (_f = numberify((0, core_1.getInput)('count'))) !== null && _f !== void 0 ? _f : 1;
     const sgIds = parseArray((0, core_1.getInput)('sg_ids', { trimWhitespace: true }));
     const sgFilters = parseFilters((0, core_1.getMultilineInput)('sg_filters', { trimWhitespace: true }));
     const sgNames = parseArray((0, core_1.getInput)('sg_names', { trimWhitespace: true }));
@@ -22136,6 +22137,7 @@ async function main() {
         const res = await (0, runTask_1.default)(task_name, cluster, {
             checkClusterExists,
             isPublicIp,
+            count,
             command,
             environment,
             wait,
