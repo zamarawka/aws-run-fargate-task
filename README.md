@@ -53,7 +53,7 @@ So, you could use this github action by this way:
 - uses: zamarawka/aws-run-fargate-task@v1
 ```
 
-And stay on actual relese with last fixes and features.
+And stay on actual release with last fixes and features.
 On new major release (in case api breaking change) will be added v2 tag with same update policy.
 
 Not recommended use action by branch name on production, like this:
